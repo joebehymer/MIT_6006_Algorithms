@@ -23,6 +23,7 @@ class Node():
 class LinkedList():
     def __init__(self) -> None:
         self.head = None
+        self.length = 0
 
     def print(self):
         if self.head == None:
@@ -41,6 +42,7 @@ class LinkedList():
     def insert_at_end(self, item):
         if self.head == None:
             self.head = Node(item)
+            self.length += 1
             return
 
         current = self.head
@@ -48,13 +50,63 @@ class LinkedList():
             current = current.next
 
         current.next = Node(item)
+        self.length += 1
 
     def insert_many(self, items):
         for item in items:
             self.insert_at_end(item)
 
+    def insert_with_S_names(self, count):
+        """Test method to insert `count` students with names like S1, S2, etc."""
+        for i in range(1, count+1):
+            self.insert_at_end(f"S{i}")
 
+
+    def reverse_second_half(self):
+        """ O(n)-time  algorithm to modify the linked list to reverse the order
+            of the last half of the list. Your algorithm should not make any new linked list 
+            or instantiate any new non-constant-sized data structures during its operation"""
+        
+        # S1, S2, S3, * S4, S5, S6 *
+        # S1, S2, S3, * S6, S5, S4 *
+        
+        # S1, S2, S3, S4, * S5, S6, S7, S8 *
+        # S1, S2, S3, S4, * S8, S7, S6, S5 *
+
+        n = int(self.length / 2)
+        currentItem: Node = self.head
+
+        # skip ahead to find last item in Jen's list
+        for _ in range(n - 1):
+            currentItem = currentItem.next
+
+        jensLastStudent = currentItem # have to point this to the last item later
+        bensFirstStudent = currentItem.next # have to point this to nothing later
+        previousItem = currentItem
+        currentItem = currentItem.next
+
+        for _ in range(n):
+            nextItem = currentItem.next # grab nextItem since we are about to overwrite it
+            currentItem.next = previousItem # assign next item to previous item, the key idea of this algorithm
+            previousItem, currentItem = currentItem, nextItem # move the pointers forward so we can do it all over again
+
+        jensLastStudent.next = previousItem
+        bensFirstStudent.next = None
 
 students = LinkedList()
-students.insert_many(["Joe", "James", "Martha"])
+students.insert_with_S_names(8)
 students.print()
+students.reverse_second_half()
+students.print()
+
+students2 = LinkedList()
+students2.insert_with_S_names(4)
+students2.print()
+students2.reverse_second_half()
+students2.print()
+
+students3 = LinkedList()
+students3.insert_with_S_names(100)
+students3.print()
+students3.reverse_second_half()
+students3.print()
